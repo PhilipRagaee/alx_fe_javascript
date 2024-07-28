@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const exportQuotesButton = document.getElementById('exportQuotes');
   const importFileInput = document.getElementById('importFile');
   const categoryFilter = document.getElementById('categoryFilter');
+  const formContainer = document.getElementById('formContainer');
   const notification = document.getElementById('notification');
 
   function showRandomQuote() {
@@ -100,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
           quotes.push(...importedQuotes);
           saveQuotes();
           updateCategoryFilter();
-          alert('Quotes imported successfully!');
+          showNotification('Quotes imported successfully!');
       };
       fileReader.readAsText(event.target.files[0]);
   }
@@ -161,13 +162,11 @@ document.addEventListener('DOMContentLoaded', () => {
           if (hasUpdates) {
               saveQuotes();
               updateCategoryFilter();
-              notification.style.display = 'block';
-              setTimeout(() => {
-                  notification.style.display = 'none';
-              }, 3000);
+              showNotification('Quotes updated from server!');
           }
       } catch (error) {
           console.error('Error fetching quotes from server:', error);
+          showNotification('Error fetching quotes from server.');
       }
   }
 
@@ -184,32 +183,38 @@ document.addEventListener('DOMContentLoaded', () => {
           console.log('Posted new quote to server:', data);
       } catch (error) {
           console.error('Error posting quote to server:', error);
+          showNotification('Error posting quote to server.');
       }
   }
 
   async function syncQuotes() {
       await fetchQuotesFromServer();
-      const unsyncedQuotes = quotes.filter(quote => !quote.synced);
-      for (const quote of unsyncedQuotes) {
-          await postQuoteToServer(quote);
-          quote.synced = true; 
-      }
-      saveQuotes();
+
+      quotes.forEach(quote => {
+          if (!quote.synced) {
+              postQuoteToServer(quote).then(() => {
+                  quote.synced = true;
+                  saveQuotes();
+              });
+          }
+      });
+  }
+
+  function showNotification(message) {
+      notification.textContent = message;
+      notification.style.display = 'block';
+      setTimeout(() => {
+          notification.style.display = 'none';
+      }, 5000); 
   }
 
   newQuoteButton.addEventListener('click', showRandomQuote);
   exportQuotesButton.addEventListener('click', exportToJsonFile);
   importFileInput.addEventListener('change', importFromJsonFile);
 
-  createAddQuoteForm();
   updateCategoryFilter();
-  populateCategories();
-  const lastViewedQuote = JSON.parse(sessionStorage.getItem('lastViewedQuote'));
-  if (lastViewedQuote) {
-      displayRandomQuote(lastViewedQuote);
-  } else {
-      showRandomQuote();
-  }
+  createAddQuoteForm();
+  showRandomQuote();
 
-  setInterval(syncQuotes, 600000); 
+  setInterval(syncQuotes, 10 * 60 * 1000); 
 });
