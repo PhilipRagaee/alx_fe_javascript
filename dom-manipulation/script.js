@@ -71,10 +71,10 @@ document.addEventListener('DOMContentLoaded', () => {
           saveQuotes();
           updateCategoryFilter();
           createAddQuoteForm(); 
-          alert('Quote added successfully!');
+          showNotification('Quote added successfully!');
           await postQuoteToServer(newQuote);
       } else {
-          alert('Please enter both a quote and a category.');
+          showNotification('Please enter both a quote and a category.');
       }
   }
 
@@ -198,6 +198,8 @@ document.addEventListener('DOMContentLoaded', () => {
               });
           }
       });
+
+      showNotification('Quotes synced with server!');
   }
 
   function showNotification(message) {
@@ -211,6 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
   newQuoteButton.addEventListener('click', showRandomQuote);
   exportQuotesButton.addEventListener('click', exportToJsonFile);
   importFileInput.addEventListener('change', importFromJsonFile);
+  categoryFilter.addEventListener('change', filterQuotes);
 
   updateCategoryFilter();
   createAddQuoteForm();
