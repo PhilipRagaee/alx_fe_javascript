@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('quotes', JSON.stringify(quotes));
   }
 
-  function exportQuotes() {
+  function exportToJsonFile() {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(quotes));
     const downloadAnchorNode = document.createElement('a');
     downloadAnchorNode.setAttribute("href", dataStr);
@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   newQuoteButton.addEventListener('click', showRandomQuote);
-  exportQuotesButton.addEventListener('click', exportQuotes);
+  exportQuotesButton.addEventListener('click', exportToJsonFile);
   importFileInput.addEventListener('change', importFromJsonFile);
 
   createAddQuoteForm();
