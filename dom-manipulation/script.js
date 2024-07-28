@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const quotes = JSON.parse(localStorage.getItem('quotes')) || [
+  let quotes = JSON.parse(localStorage.getItem('quotes')) || [
     { text: "The only limit to our realization of tomorrow is our doubts of today.", category: "Motivation" },
     { text: "Life is 10% what happens to us and 90% how we react to it.", category: "Life" },
     { text: "The purpose of our lives is to be happy.", category: "Happiness" },
@@ -10,10 +10,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const formContainer = document.getElementById('formContainer');
   const exportQuotesButton = document.getElementById('exportQuotes');
   const importFileInput = document.getElementById('importFile');
+  const categoryFilter = document.getElementById('categoryFilter');
 
   function showRandomQuote() {
-    const randomIndex = Math.floor(Math.random() * quotes.length);
-    const randomQuote = quotes[randomIndex];
+    const filteredQuotes = getFilteredQuotes();
+    if (filteredQuotes.length === 0) {
+      quoteDisplay.textContent = 'No quotes available for the selected category.';
+      return;
+    }
+    const randomIndex = Math.floor(Math.random() * filteredQuotes.length);
+    const randomQuote = filteredQuotes[randomIndex];
     displayRandomQuote(randomQuote);
     sessionStorage.setItem('lastViewedQuote', JSON.stringify(randomQuote));
   }
@@ -61,7 +67,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (newQuoteText && newQuoteCategory) {
       quotes.push({ text: newQuoteText, category: newQuoteCategory });
       saveQuotes();
-      createAddQuoteForm(); // Reset the form after adding a quote
+      updateCategoryFilter();
+      createAddQuoteForm(); 
       alert('Quote added successfully!');
     } else {
       alert('Please enter both a quote and a category.');
@@ -90,9 +97,39 @@ document.addEventListener('DOMContentLoaded', () => {
       const importedQuotes = JSON.parse(event.target.result);
       quotes.push(...importedQuotes);
       saveQuotes();
+      updateCategoryFilter();
       alert('Quotes imported successfully!');
     };
     fileReader.readAsText(event.target.files[0]);
+  }
+
+  function getCategories() {
+    const categories = quotes.map(quote => quote.category);
+    return ['all', ...new Set(categories)];
+  }
+
+  function updateCategoryFilter() {
+    const categories = getCategories();
+    categoryFilter.innerHTML = '';
+    categories.forEach(category => {
+      const option = document.createElement('option');
+      option.value = category;
+      option.textContent = category;
+      categoryFilter.appendChild(option);
+    });
+    const lastSelectedCategory = localStorage.getItem('selectedCategory') || 'all';
+    categoryFilter.value = lastSelectedCategory;
+  }
+
+  function filterQuotes() {
+    const selectedCategory = categoryFilter.value;
+    localStorage.setItem('selectedCategory', selectedCategory);
+    showRandomQuote();
+  }
+
+  function getFilteredQuotes() {
+    const selectedCategory = localStorage.getItem('selectedCategory') || 'all';
+    return selectedCategory === 'all' ? quotes : quotes.filter(quote => quote.category === selectedCategory);
   }
 
   newQuoteButton.addEventListener('click', showRandomQuote);
@@ -100,6 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
   importFileInput.addEventListener('change', importFromJsonFile);
 
   createAddQuoteForm();
+  updateCategoryFilter();
   const lastViewedQuote = JSON.parse(sessionStorage.getItem('lastViewedQuote'));
   if (lastViewedQuote) {
     displayRandomQuote(lastViewedQuote);
