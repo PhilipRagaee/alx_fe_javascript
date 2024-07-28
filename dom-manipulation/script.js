@@ -132,12 +132,23 @@ document.addEventListener('DOMContentLoaded', () => {
     return selectedCategory === 'all' ? quotes : quotes.filter(quote => quote.category === selectedCategory);
   }
 
+  function populateCategories() {
+    const uniqueCategories = getCategories();
+    uniqueCategories.forEach(category => {
+      const option = document.createElement('option');
+      option.value = category;
+      option.textContent = category;
+      categoryFilter.appendChild(option);
+    });
+  }
+
   newQuoteButton.addEventListener('click', showRandomQuote);
   exportQuotesButton.addEventListener('click', exportToJsonFile);
   importFileInput.addEventListener('change', importFromJsonFile);
 
   createAddQuoteForm();
   updateCategoryFilter();
+  populateCategories();
   const lastViewedQuote = JSON.parse(sessionStorage.getItem('lastViewedQuote'));
   if (lastViewedQuote) {
     displayRandomQuote(lastViewedQuote);
