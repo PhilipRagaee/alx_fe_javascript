@@ -5,11 +5,11 @@ document.addEventListener('DOMContentLoaded', () => {
     { text: "The purpose of our lives is to be happy.", category: "Happiness" },
   ];
 
-  const quoteDisplay = document.getElementById('quoteDisplay').innerHTML;
-  const newQuoteButton = document.getElementById('newQuote').innerHTML;
-  const formContainer = document.getElementById('formContainer').innerHTML;
-  const exportQuotesButton = document.getElementById('exportQuotes').innerHTML;
-  const importFileInput = document.getElementById('importFile').innerHTML;
+  const quoteDisplay = document.getElementById('quoteDisplay');
+  const newQuoteButton = document.getElementById('newQuote');
+  const formContainer = document.getElementById('formContainer');
+  const exportQuotesButton = document.getElementById('exportQuotes');
+  const importFileInput = document.getElementById('importFile');
 
   function showRandomQuote() {
     const randomIndex = Math.floor(Math.random() * quotes.length);
@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (newQuoteText && newQuoteCategory) {
       quotes.push({ text: newQuoteText, category: newQuoteCategory });
       saveQuotes();
-      createAddQuoteForm(); 
+      createAddQuoteForm(); // Reset the form after adding a quote
       alert('Quote added successfully!');
     } else {
       alert('Please enter both a quote and a category.');
@@ -73,9 +73,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function exportToJsonFile() {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(quotes));
+    const dataStr = JSON.stringify(quotes);
+    const blob = new Blob([dataStr], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
     const downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("href", url);
     downloadAnchorNode.setAttribute("download", "quotes.json");
     document.body.appendChild(downloadAnchorNode); 
     downloadAnchorNode.click();
