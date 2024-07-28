@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
           quotes.push(newQuote);
           saveQuotes();
           updateCategoryFilter();
-          createAddQuoteForm(); 
+          createAddQuoteForm(); // Reset the form after adding a quote
           showNotification('Quote added successfully!');
           await postQuoteToServer(newQuote);
       } else {
@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const downloadAnchorNode = document.createElement('a');
       downloadAnchorNode.setAttribute("href", url);
       downloadAnchorNode.setAttribute("download", "quotes.json");
-      document.body.appendChild(downloadAnchorNode); 
+      document.body.appendChild(downloadAnchorNode); // Required for Firefox
       downloadAnchorNode.click();
       downloadAnchorNode.remove();
   }
@@ -163,10 +163,12 @@ document.addEventListener('DOMContentLoaded', () => {
               saveQuotes();
               updateCategoryFilter();
               showNotification('Quotes updated from server!');
+              alert('Quotes updated from server!');
           }
       } catch (error) {
           console.error('Error fetching quotes from server:', error);
           showNotification('Error fetching quotes from server.');
+          alert('Error fetching quotes from server.');
       }
   }
 
@@ -184,6 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
       } catch (error) {
           console.error('Error posting quote to server:', error);
           showNotification('Error posting quote to server.');
+          alert('Error posting quote to server.');
       }
   }
 
@@ -200,6 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       showNotification('Quotes synced with server!');
+      alert('Quotes synced with server!');
   }
 
   function showNotification(message) {
