@@ -142,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
   }
 
-  async function syncQuotesWithServer() {
+  async function fetchQuotesFromServer() {
       try {
           const response = await fetch('https://jsonplaceholder.typicode.com/posts');
           const serverQuotes = await response.json();
@@ -151,7 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
           serverQuotes.forEach(serverQuote => {
               if (!quotes.some(localQuote => localQuote.text === serverQuote.text)) {
-                  quotes.push(serverQuote);
+                  quotes.push({ text: serverQuote.body, category: 'Server' });
                   hasUpdates = true;
               }
           });
@@ -165,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
               }, 3000);
           }
       } catch (error) {
-          console.error('Error syncing with server:', error);
+          console.error('Error fetching quotes from server:', error);
       }
   }
 
@@ -183,5 +183,5 @@ document.addEventListener('DOMContentLoaded', () => {
       showRandomQuote();
   }
 
-  setInterval(syncQuotesWithServer, 600000); 
+  setInterval(fetchQuotesFromServer, 600000); // 
 });
