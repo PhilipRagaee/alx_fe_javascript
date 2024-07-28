@@ -61,15 +61,17 @@ document.addEventListener('DOMContentLoaded', () => {
       formContainer.appendChild(addQuoteButton);
   }
 
-  function addQuote() {
+  async function addQuote() {
       const newQuoteText = document.getElementById('newQuoteText').value.trim();
       const newQuoteCategory = document.getElementById('newQuoteCategory').value.trim();
       if (newQuoteText && newQuoteCategory) {
-          quotes.push({ text: newQuoteText, category: newQuoteCategory });
+          const newQuote = { text: newQuoteText, category: newQuoteCategory };
+          quotes.push(newQuote);
           saveQuotes();
           updateCategoryFilter();
           createAddQuoteForm(); 
           alert('Quote added successfully!');
+          await postQuoteToServer(newQuote);
       } else {
           alert('Please enter both a quote and a category.');
       }
@@ -169,6 +171,22 @@ document.addEventListener('DOMContentLoaded', () => {
       }
   }
 
+  async function postQuoteToServer(quote) {
+      try {
+          const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(quote)
+          });
+          const data = await response.json();
+          console.log('Posted new quote to server:', data);
+      } catch (error) {
+          console.error('Error posting quote to server:', error);
+      }
+  }
+
   newQuoteButton.addEventListener('click', showRandomQuote);
   exportQuotesButton.addEventListener('click', exportToJsonFile);
   importFileInput.addEventListener('change', importFromJsonFile);
@@ -183,5 +201,5 @@ document.addEventListener('DOMContentLoaded', () => {
       showRandomQuote();
   }
 
-  setInterval(fetchQuotesFromServer, 600000); // 
+  setInterval(fetchQuotesFromServer, 600000); 
 });
