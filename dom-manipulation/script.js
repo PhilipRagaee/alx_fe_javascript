@@ -187,6 +187,16 @@ document.addEventListener('DOMContentLoaded', () => {
       }
   }
 
+  async function syncQuotes() {
+      await fetchQuotesFromServer();
+      const unsyncedQuotes = quotes.filter(quote => !quote.synced);
+      for (const quote of unsyncedQuotes) {
+          await postQuoteToServer(quote);
+          quote.synced = true; 
+      }
+      saveQuotes();
+  }
+
   newQuoteButton.addEventListener('click', showRandomQuote);
   exportQuotesButton.addEventListener('click', exportToJsonFile);
   importFileInput.addEventListener('change', importFromJsonFile);
@@ -201,5 +211,5 @@ document.addEventListener('DOMContentLoaded', () => {
       showRandomQuote();
   }
 
-  setInterval(fetchQuotesFromServer, 600000); 
+  setInterval(syncQuotes, 600000); 
 });
