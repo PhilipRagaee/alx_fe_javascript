@@ -6,11 +6,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add more quotes if desired
   ];
 
-  const quoteDisplay = document.getElementById('quoteDisplay');
-  const newQuoteButton = document.getElementById('newQuote');
-  const addQuoteButton = document.getElementById('addQuoteButton');
-  const newQuoteText = document.getElementById('newQuoteText');
-  const newQuoteCategory = document.getElementById('newQuoteCategory');
+  const quoteDisplay = document.getElementById('quoteDisplay').innerHTML;
+  const newQuoteButton = document.getElementById('newQuote').innerHTML;
+  const addQuoteButton = document.getElementById('addQuoteButton').innerHTML;
+  const newQuoteText = document.getElementById('newQuoteText').innerHTML;
+  const newQuoteCategory = document.getElementById('newQuoteCategory').innerHTML;
 
   function showRandomQuote() {
     const randomIndex = Math.floor(Math.random() * quotes.length);
