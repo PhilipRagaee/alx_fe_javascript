@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     { text: "The only limit to our realization of tomorrow is our doubts of today.", category: "Motivation" },
     { text: "Life is 10% what happens to us and 90% how we react to it.", category: "Life" },
     { text: "The purpose of our lives is to be happy.", category: "Happiness" },
+    // Add more quotes if desired
   ];
 
   const quoteDisplay = document.getElementById('quoteDisplay');
@@ -18,7 +19,16 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function displayRandomQuote(quote) {
-    quoteDisplay.textContent = `${quote.text} - ${quote.category}`;
+    while (quoteDisplay.firstChild) {
+      quoteDisplay.removeChild(quoteDisplay.firstChild);
+    }
+
+    const quoteText = document.createElement('p');
+    quoteText.textContent = quote.text;
+    const quoteCategory = document.createElement('p');
+    quoteCategory.textContent = `- ${quote.category}`;
+    quoteDisplay.appendChild(quoteText);
+    quoteDisplay.appendChild(quoteCategory);
   }
 
   function addQuote() {
